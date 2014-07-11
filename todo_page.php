@@ -1,10 +1,3 @@
-
-<?php
-
-var_dump($_GET);
-
-?>
-
 <div class="wrap">
 
 	<h2>Todo Application</h2>
@@ -26,15 +19,6 @@ var_dump($_GET);
 			</tr>
 		</thead>
 		<tbody>
-			<tr>
-				<td><input type="checkbox"></td>
-				<td>My Todo Application</td>
-				<td>Todo Description</td>
-				<td>In progress</td>
-				<td>
-				<button id="edit" class="button">Edit</button>
-				<button id="delete" class="button">Delete</button> </td>
-			</tr>
 		</tbody>
 	</table>
 <hr>
@@ -45,6 +29,29 @@ var_dump($_GET);
 <script type="text/javascript">
 jQuery(document).ready(function($){
 
+
+	var data = [
+	{"title": "my todo task","description": "My description task"},
+	{"title": "my 2nd task","description": "My 2nd task"}
+	];
+
+
+
+	for (var i = 0; i < data.length; i++) {
+
+		$('tbody').append(
+				'<tr> ' + 
+				'<td><input type="checkbox"></td>' +
+				'<td>' + data[i].title + '</div> </td>' +
+				'<td>' + data[i].description+  '</div> </td>' +
+				'<td>In progress</td>' +
+				'<td>' +
+				'<button id="edit" class="button">Edit</button>' +
+				'<button id="delete" class="button">Delete</button> </td>' +
+				'</tr>'
+			);
+	
+	};
  $('button').click(function(){
  	$action = $(this).attr('id');
  	
