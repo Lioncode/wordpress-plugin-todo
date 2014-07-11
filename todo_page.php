@@ -1,15 +1,8 @@
 
 <?php
 
-if (isset($_POST["add"]) && !empty($_POST["add"])) {
-   
-	//Add row data
-	global $wpdb;
+var_dump($_GET);
 
-
-}else{  
-    echo "N0, mail is not set";
-}
 ?>
 
 <div class="wrap">
@@ -29,6 +22,7 @@ if (isset($_POST["add"]) && !empty($_POST["add"])) {
 				<th><a href="#">Title</a></th>
 				<th><a href="#">Description</th>
 				<th><a href="#">Status</th>
+				<th> <a href="#">Options</a> </td>
 			</tr>
 		</thead>
 		<tbody>
@@ -37,23 +31,37 @@ if (isset($_POST["add"]) && !empty($_POST["add"])) {
 				<td>My Todo Application</td>
 				<td>Todo Description</td>
 				<td>In progress</td>
+				<td>
+				<button id="edit" class="button">Edit</button>
+				<button id="delete" class="button">Delete</button> </td>
 			</tr>
-		
-			<tr>
-				<td><input type="checkbox"></td>
-				<td>My Todo Application</td>
-				<td>Todo Description</td>
-				<td>In progress</td>
-			</tr>
-
-			<tr>
-				<td><input type="checkbox"></td>
-				<td>My Todo Application</td>
-				<td>Todo Description</td>
-				<td>In progress</td>
-			</tr>
-
 		</tbody>
 	</table>
 <hr>
+
 </div>
+
+
+<script type="text/javascript">
+jQuery(document).ready(function($){
+
+ $('button').click(function(){
+ 	$action = $(this).attr('id');
+ 	
+
+
+	var data = {
+		'action': 'my_action',
+		'id': 12
+	};
+
+	// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
+	$.post(ajaxurl, data, function(response) {
+		alert('Got this from the server: ' + response);
+	});
+
+
+ });
+
+});
+</script>
