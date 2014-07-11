@@ -31,15 +31,18 @@ function todos_activate() {
 	$table_name = $wpdb->prefix . "todos";
 
 	if($wpdb->get_var("SHOW TABLES LIKE '$table_name' ") != $table_name){
-		$sql = "CREATE TABLE wp_test (
-					tid INT(11) NOT NULL AUTO_INCREMENT,
-					title TINYTEXT  NOT NULL,
+
+		global $wpdb;
+		$sql = "CREATE TABLE $table_name (
+		 			tid INT(11) NOT NULL AUTO_INCREMENT,
+		 			title TINYTEXT  NOT NULL,
 					description TINYTEXT NOT NULL,
-					status TINYTEXT NOT NULL,
-					UNIQUE KEY id(tid)
-					)";
-				require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-				dbDelta($sql);
+		 			status TINYTEXT NOT NULL,
+		 			UNIQUE KEY id(tid)
+				);";
+		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+		dbDelta($sql);
+
 
 	}
 }
