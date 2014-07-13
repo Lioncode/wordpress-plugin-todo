@@ -1,18 +1,14 @@
 <div class="wrap">
 
 	<h2>Todo Application</h2>
-
-<form action="" method="POST">
-<input type="search" name="add"> <button class="button action">Add</button>
-</form>
+<input type="search" id="todo_add_text"> <button id="add_btn" class="button-primary action">Add</button>
 
 <hr>
-
 	<table class="widefat">
 		<thead>
 			<tr >
-				<th><a href="#">Task</a></th>
-				<th><a href="#">Title</a></th>
+				<th class="check-column"><input type="checkbox"></th>
+				<th class="column-title"><a href="#">Title</a></th>
 				<th><a href="#">Description</th>
 				<th><a href="#">Status</th>
 				<th> <a href="#">Options</a> </td>
@@ -22,53 +18,90 @@
 		</tbody>
 	</table>
 <hr>
-
 </div>
-
+<?php
+//Set Your Nonce
+$ajax_nonce = wp_create_nonce( "my-special-string" );
+?>
 
 <script type="text/javascript">
 jQuery(document).ready(function($){
 
 
-	var data = [
-	{"title": "my todo task","description": "My description task"},
-	{"title": "my 2nd task","description": "My 2nd task"}
-	];
-
-
-
-	for (var i = 0; i < data.length; i++) {
-
-		$('tbody').append(
-				'<tr> ' + 
-				'<td><input type="checkbox"></td>' +
-				'<td>' + data[i].title + '</div> </td>' +
-				'<td>' + data[i].description+  '</div> </td>' +
-				'<td>In progress</td>' +
-				'<td>' +
-				'<button id="edit" class="button">Edit</button>' +
-				'<button id="delete" class="button">Delete</button> </td>' +
-				'</tr>'
-			);
-	
-	};
- $('button').click(function(){
- 	$action = $(this).attr('id');
- 	
-
+	 
+	function tasks(action){
 
 	var data = {
-		'action': 'my_action',
-		'id': 12
+	'action': action,
+	'security': '<?php echo $ajax_nonce; ?>',
 	};
 
-	// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
 	$.post(ajaxurl, data, function(response) {
-		alert('Got this from the server: ' + response);
+	//alert('Got this from the server: ' + response);
+	$('tbody').append(response);
+	$('tbody tr:odd').addClass('alternate');
 	});
+	}
+
+	function tasks_delete(id){
+	var data = {
+	'action': 'delete_task',
+	'security': '<?php echo $ajax_nonce; ?>',
+	'id': id
+	};
+		$.post(ajaxurl, data, function(response) {
+			$('tbody').text('');
+			$('tbody').append(response);
+			$('tbody tr:odd').addClass('alternate');
+		});
+	}
+
+	function add_task(){
 
 
+	var title = $('#todo_add_text').val();
+    title = $(title)[0].textContent;
+
+	var data = {
+	'action': 'add_task',
+	'security': '<?php echo $ajax_nonce; ?>',
+	'title': title
+	};
+		$.post(ajaxurl, data, function(response){$('tbody').text('');
+			$('tbody').append(response);
+			$('tbody tr:odd').addClass('alternate');
+				}
+			);
+	}
+	tasks('load_todos');
+
+
+	
+ $('.wrap').on('click','button',function(e){
+ 	// $action = $(this).attr('id');
+ 	
+ 	var action = $(this).text();
+ 	var id = $(this).attr('id');
+
+ 
+ 	switch(action) {
+    case 'Edit':
+        
+        break;
+    case 'Delete':
+       tasks_delete(id);
+        break;
+    case 'Add':
+    	add_task();
+    	break;
+    // default:
+    //     default code block
+	}
+
+	
  });
+
+
 
 });
 </script>

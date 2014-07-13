@@ -61,20 +61,58 @@ add_action('wp_ajax_nopriv_myFunction', 'myFunction');
 
 
 //Ajax action response
- add_action( 'wp_ajax_my_action', 'my_action_callback' );
+ add_action( 'wp_ajax_load_todos', 'my_action_callback' );
 function my_action_callback() {
 	global $wpdb; // this is how you get access to the database
+	check_ajax_referer( 'my-special-string', 'security' );
 	$table_name = $wpdb->prefix . "todos";
+	$data = $wpdb->get_results( "SELECT * FROM wp_todos");
 
-	//$db = $wpdb->get_results( "SELECT * FROM '$table_name'" );
-
-	$db = array("data" => "dummydata");
-	$db = json_encode($db);
-
-
-	$whatever = intval( $_POST['id'] );
-	$whatever += 10;
-        echo $db;
+	render($data);
 
 	die(); // this is required to return a proper result
+}
+
+function render($data){
+	$db = "";
+
+	foreach ($data as $key)  {
+		$db .= '<tr> 
+				<td><input type="checkbox"></td>
+				<td>'.$key->title.' </div> </td> 
+				<td>'.$key->description.'</div> </td>
+				<td>'.$key->status.'</td>
+				<td>
+				<button id="'. $key->tid .'" class="button">Edit</button>
+				<button id="'. $key->tid .'" class="button">Delete</button> </td>
+				</tr>';
+	}
+    echo $db;
+}
+
+
+add_action( 'wp_ajax_delete_task', 'delete_task' );
+function delete_task(){
+	global $wpdb;
+	$table_name = $wpdb->prefix . "todos";
+	$wpdb->delete($table_name,array('tid'=>$_POST['id']));
+
+	$data = $wpdb->get_results( "SELECT * FROM wp_todos");
+	render($data);
+	echo $db;
+
+
+
+	die();
+}
+
+add_action( 'wp_ajax_add_task', 'add_task' );
+function add_task(){
+	global $wpdb;
+	$table_name = $wpdb->prefix . "todos";
+	echo $_POST['title'];
+	$wpdb->insert($table_name,array('title'=>$_POST['title']));
+	$data = $wpdb->get_results( "SELECT * FROM wp_todos");
+	render($data);
+	die();
 }
