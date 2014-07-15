@@ -60,7 +60,7 @@ jQuery(document).ready(function($){
 
 
 	var title = $('#todo_add_text').val();
-    title = $(title)[0].textContent;
+    //title = $(title)[0].textContent;
 
 	var data = {
 	'action': 'add_task',
@@ -74,19 +74,21 @@ jQuery(document).ready(function($){
 			);
 	}
 	tasks('load_todos');
-
-
+	function edit(event){
+		 event.parent().parent().find('label').hide();
+		  event.parent().parent().find('input').show();
+	}
 	
  $('.wrap').on('click','button',function(e){
  	// $action = $(this).attr('id');
  	
  	var action = $(this).text();
  	var id = $(this).attr('id');
-
+ 	//console.log($(this).parent().parent().find('label').text());
  
  	switch(action) {
     case 'Edit':
-        
+    	edit($(this));
         break;
     case 'Delete':
        tasks_delete(id);

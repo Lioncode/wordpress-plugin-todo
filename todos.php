@@ -73,21 +73,29 @@ function my_action_callback() {
 	die(); // this is required to return a proper result
 }
 
-function render($data){
-	$db = "";
+function render(){
+	global $wpdb;
+	$data = $wpdb->get_results( "SELECT * FROM wp_todos");
 
-	foreach ($data as $key)  {
-		$db .= '<tr> 
-				<td><input type="checkbox"></td>
-				<td>'.$key->title.' </div> </td> 
-				<td>'.$key->description.'</div> </td>
-				<td>'.$key->status.'</td>
-				<td>
-				<button id="'. $key->tid .'" class="button">Edit</button>
-				<button id="'. $key->tid .'" class="button">Delete</button> </td>
-				</tr>';
+	if($data){
+		$db = "";
+		foreach ($data as $key)  {
+			$db .= '<tr> 
+					<td><input type="checkbox" ></td>
+					<td><label>'.$key->title.'</label><div><input class="edit" type="text" value=" ' . $key->title . '"> </div> </td> 
+					<td>'.$key->description.'</div> </td>
+					<td>'.$key->status.'</td>
+					<td>
+					<button id="'. $key->tid .'" class="button">Edit</button>
+					<button id="'. $key->tid .'" class="button">Delete</button> </td>
+					</tr>';
+		}
+		echo $db;
+	}else{
+		echo '';
 	}
-    echo $db;
+
+
 }
 
 
@@ -99,10 +107,7 @@ function delete_task(){
 
 	$data = $wpdb->get_results( "SELECT * FROM wp_todos");
 	render($data);
-	echo $db;
-
-
-
+	
 	die();
 }
 
@@ -112,7 +117,18 @@ function add_task(){
 	$table_name = $wpdb->prefix . "todos";
 	echo $_POST['title'];
 	$wpdb->insert($table_name,array('title'=>$_POST['title']));
-	$data = $wpdb->get_results( "SELECT * FROM wp_todos");
-	render($data);
+	render();
 	die();
 }
+
+// Register style sheet.
+//add_action( 'wp_enqueue_scripts', 'register_plugin_styles' );
+add_action( 'admin_enqueue_scripts', 'register_plugin_styles' );
+/**
+ * Register stylsheet.
+ */
+function register_plugin_styles() {
+	wp_register_style( 'my-plugin', plugins_url( 'css/styles.css', __FILE__ ) );
+	wp_enqueue_style( 'my-plugin' );
+}
+
