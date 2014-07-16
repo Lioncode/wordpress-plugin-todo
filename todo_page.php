@@ -77,6 +77,7 @@ jQuery(document).ready(function($){
 	function edit(event){
 		 event.parent().parent().find('label').hide();
 		  event.parent().parent().find('input').show();
+		  console.log(event);
 	}
 	
  $('.wrap').on('click','button',function(e){
